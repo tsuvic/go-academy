@@ -1,0 +1,10 @@
+go 1.19
+
+use (
+	.
+	./day1/practice3
+	./day1/practice4
+	./day1/practice5
+	./day1/practice6
+	./day1/task7
+)
