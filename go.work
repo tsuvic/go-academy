@@ -7,4 +7,7 @@ use (
 	./day1/practice5
 	./day1/practice6
 	./day1/task7
+	./tools
+	
+	./tools/template
 )
