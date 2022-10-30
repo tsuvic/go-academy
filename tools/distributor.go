@@ -33,15 +33,14 @@ func makeTemplateFolder() {
 
 		fullpath := pwd + "/" + path + "/" + folderName //①＋②＋③＋④でフォルダ作成
 
-		fmt.Println(pwd + "/tools/template/main.go")
-		src, err := os.Open(pwd + "/tools/template/main.go") //コピー元
-		if err != nil {
-			panic(err)
-		}
-		defer src.Close()
-
 		for i := 1; i <= num; i++ {
 			if err := os.Mkdir(fullpath+strconv.Itoa(i), 0755); err != nil {
+				panic(err)
+			}
+
+			fmt.Println(pwd + "/tools/template/main.go")
+			src, err := os.Open(pwd + "/tools/template/main.go") //コピー元
+			if err != nil {
 				panic(err)
 			}
 
@@ -55,8 +54,10 @@ func makeTemplateFolder() {
 			if err != nil {
 				panic(err)
 			}
-			defer dst.Close()
 
+			//https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
+			src.Close()
+			dst.Close()
 		}
 	}
 
