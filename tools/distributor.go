@@ -55,7 +55,10 @@ func makeTemplateFolder() {
 				panic(err)
 			}
 
+			//https://stackoverflow.com/questions/1821811/how-to-read-write-from-to-a-file-using-go
 			//https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
+			//for文の中に関数スコープ（無名関数）でopen, create, defer closeをするのが良い。
+			//deferは見通しを良くするためだから、この程度のコードならこれで良い？
 			src.Close()
 			dst.Close()
 		}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 func f(a string) {
@@ -16,6 +15,12 @@ func main() {
 	go f("b")
 	go f("c")
 
-	time.Sleep(time.Second)
-	fmt.Println("done")
+	// time.Sleep(time.Second)
+	// fmt.Println("done")
+
+	// scanner := bufio.NewScanner(os.Stdin)
+	// fmt.Print("Input X:")
+	// scanner.Scan()
+
+	// x, err := strconv.Atoi(scanner.Text())
 }
