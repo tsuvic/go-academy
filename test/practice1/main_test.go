@@ -11,7 +11,7 @@ func Test1(t *testing.T) {
 
 func Test2(t *testing.T) {
 	var num []int = []int{1, 3, 5}
-	if !(Sum(num) == 1) {
+	if !(Sum(num) == 9) {
 		t.Error(`miss`)
 	}
 }
