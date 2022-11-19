@@ -1,0 +1,39 @@
+curl -X POST http://localhost:8080/upload -F "file=@./day3/task11/input.txt" -H "Content-Type: multipart/form-data" 
+curl -X POST http://localhost:8080/json \
+    -H 'Content-Type: application/json' \
+    -d '{
+   "date":"2021-11-20",
+   "title":"東京都の天気",
+   "forecasts":[
+      {
+         "date":"2021-11-20",
+         "dateLabel":"今日",
+         "telop":"晴れ",
+         "detail":{
+            "weather":"晴れ",
+            "wind":"北の風",
+            "wave":"０．４メートル"
+         }
+      },
+      {
+         "date":"2021-11-21",
+         "dateLabel":"明日",
+         "telop":"曇のち一時雨",
+         "detail":{
+            "weather":"くもり　時々　晴れ",
+            "wind":"北の風",
+            "wave":"０．４メートル"
+         }
+      },
+      {
+         "date":"2021-11-22",
+         "dateLabel":"明後日",
+         "telop":"雨",
+         "detail":{
+            "weather":null,
+            "wind":null,
+            "wave":null
+         }
+      }
+   ]
+}'
