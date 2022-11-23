@@ -47,7 +47,7 @@ func main() {
 }
 
 func handleForm(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	// r.ParseForm()
 
 	form := r.PostForm
 
