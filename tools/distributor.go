@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -14,54 +15,70 @@ func main() {
 
 func makeTemplateFolder() {
 	flag.Parse()
-	if flg := flag.Args(); len(flg) == 2 { //引数は2つのみ。第一引数は対象フォルダ。第二引数は対象フォルダ配下に作成するフォルダ数。
+	flg := flag.Args()
 
-		pwd, err := os.Getwd() //①カレントディレクトリ取得。必ずrootで本プログラムを実行する。
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	//引数は2つ。第一引数は対象フォルダ。第二引数は対象フォルダ配下に作成するフォルダ数。
+	if len(flg) != 2 {
+		fmt.Println("fewer args than expected")
+	}
 
-		path := flg[0]       //②第一引数を取得。
-		folderName := "task" //③フォルダ名を決定。
+	//カレントディレクトリを取得
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-		num, err := strconv.Atoi(flg[1]) //④第二引数の値を取得。
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	//引数を取得
+	parentFolder := flg[0]
+	num, err := strconv.Atoi(flg[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-		fullpath := pwd + "/" + path + "/" + folderName //①＋②＋③＋④でフォルダ作成
+	//作成予定のディレクトリパスを宣言
+	//https://mattn.kaoriya.net/software/lang/go/20171024130616.htm
+	path := filepath.Join(pwd, parentFolder)
 
-		for i := 1; i <= num; i++ {
-			if err := os.Mkdir(fullpath+strconv.Itoa(i), 0755); err != nil {
+	//ディレクトリ（サブディレクトリを含む場合はMkdirAll）を作成
+	if err := os.MkdirAll(path, 0755); err != nil {
+		panic(err)
+	}
+
+	//forループの中でdeferする場合、キューはLIFOのためにメモリを大量使用し、爆発する
+	//この程度のコードの場合、問題にならないので、関数スコープ（func()）を使わず、forループの中の最後でdeferしても良い
+	//https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
+	//https://stackoverflow.com/questions/1821811/how-to-read-write-from-to-a-file-using-go
+	for i := 1; i <= num; i++ {
+		func() {
+			childFolder := "task" + strconv.Itoa(i)
+
+			//ディレクトリを作成
+			if err := os.Mkdir(filepath.Join(path, childFolder), 0755); err != nil {
 				panic(err)
 			}
 
-			fmt.Println(pwd + "/tools/template/main.go")
-			src, err := os.Open(pwd + "/tools/template/main.go") //コピー元
+			//コピー元のファイルを宣言
+			src, err := os.Open(filepath.Join(pwd, "/tools/template/main.go"))
 			if err != nil {
 				panic(err)
 			}
+			defer src.Close()
 
-			fmt.Println(fullpath + strconv.Itoa(i) + "/" + "main.go")
-			dst, err := os.Create(fullpath + strconv.Itoa(i) + "/" + "main.go") //コピー先
+			//コピー先のファイルを宣言
+			dst, err := os.Create(filepath.Join(path, childFolder, "main.go"))
 			if err != nil {
 				panic(err)
 			}
+			defer dst.Close()
 
+			//コピーを実施
 			_, err = io.Copy(dst, src)
 			if err != nil {
 				panic(err)
 			}
+		}()
 
-			//https://stackoverflow.com/questions/1821811/how-to-read-write-from-to-a-file-using-go
-			//https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
-			//for文の中に関数スコープ（無名関数）でopen, create, defer closeをするのが良い。
-			//deferは見通しを良くするためだから、この程度のコードならこれで良い？
-			src.Close()
-			dst.Close()
-		}
 	}
-
 }
